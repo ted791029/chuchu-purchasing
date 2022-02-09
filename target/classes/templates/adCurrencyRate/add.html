@@ -1,0 +1,54 @@
+<html layout:decorator="layout/layout_ad_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="d-flex flex-column container-fluid min-vh-100 bg-light">
+		<form id="ADCurrencyRateForm" class="form" th:action="@{/chuAdmin/currencyRate/save}" method="post" th:object="${ADCurrencyRateForm}">
+			<input type="hidden" th:field="*{urlSuffix}" name="urlSuffix" th:value="*{urlSuffix}">
+			<div class="form-group row justify-content-center">
+				<h2 class="text-success">新增匯率</h2>   
+			</div>
+			<div class="form-group">
+				<label for="areaId">幣別:<span class="text-danger">*</span></label>
+				<select th:field="*{currencyId}" class="form-select form-check" name="currencyId">
+			      <option value="" selected>請選擇幣別</option>
+			      <option th:each="currency : ${currencyIdMap}" th:value="${currency.key}" th:text="${currency.value}">
+				  </option>
+			    </select>
+			    <p th:if="${#fields.hasErrors('currencyId')}" th:errorclass="error" th:errors="*{currencyId}" /> 
+			</div>
+			<div class="form-group">
+				<label for="name">匯率:<span class="text-danger">*</span></label> 
+				<input class="form-control form-check" placeholder="請輸入匯率" th:field="*{rate}" name="rate" onkeyUp="transFeeWithPoint(this);">
+				<p th:if="${#fields.hasErrors('rate')}" th:errorclass="error" th:errors="*{rate}" />
+			</div>
+			<div class="row justify-content-center">
+				<a class="btn btn-success text-white" onclick="$('#ADCurrencyRateForm').submit()">新增</a>
+			</div>
+		</form>
+	</div>
+</body>
+<script layout:fragment="script">
+//至小數點八位
+function transFeeWithPoint(e){
+    var num = e.value;
+    num = num.replace(/,/g , "");
+    num = num.replace(/[^0-9\.]+/g , "");
+    
+    if (num.includes('.')) {
+    	  var numindex = num.indexOf(".");
+    	  var head = num.substring(0,numindex);
+    	  var bottom = num.substring(numindex,numindex+9);
+    	  num = head+bottom;
+	}
+    
+    if(isNaN(num)){
+         alertMsg("請輸入數字");
+         return;
+    }
+
+    var pattern = /(-?\d+)(\d{9})/;
+    e.value = num;
+}
+</script>
+</html>

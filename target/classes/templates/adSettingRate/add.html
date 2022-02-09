@@ -1,0 +1,72 @@
+<html layout:decorator="layout/layout_ad_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="d-flex flex-column container-fluid min-vh-100 bg-light">
+		<form id="ADSettingRateForm" class="form" th:action="@{/chuAdmin/settingRate/save}" method="post" th:object="${ADSettingRateForm}">
+			<input type="hidden" th:field="*{urlSuffix}" name="urlSuffix" th:value="*{urlSuffix}">
+			<div class="form-group row justify-content-center">
+				<h2 class="text-success">新增自訂匯率</h2>   
+			</div>
+			<div class="form-group">
+				<label for="whereId">來源種類:<span class="text-danger">*</span></label>
+				<select th:field="*{whereId}" class="form-select form-check" name="whereId">
+			      <option value="" selected>請選擇來源種類</option>
+			      <option th:each="where : ${fromWhereIdMap}" th:value="${where.key}" th:text="${where.value}">
+				  </option>
+			    </select>
+			    <p th:if="${#fields.hasErrors('whereId')}" th:errorclass="error" th:errors="*{whereId}" /> 
+			</div>
+			<div class="form-group">
+				<label for="countryId">國家:<span class="text-danger">*</span></label>
+				<select th:field="*{countryId}" class="form-select form-check" name="countryId">
+			      <option value="" selected>請選擇國家</option>
+			      <option th:each="country : ${countryIdMap}" th:value="${country.key}" th:text="${country.value}">
+				  </option>
+			    </select>
+			    <p th:if="${#fields.hasErrors('countryId')}" th:errorclass="error" th:errors="*{countryId}" /> 
+			</div>
+			<div class="form-group">
+				<label for="customerTypeId">客戶種類:<span class="text-danger">*</span></label>
+				<select th:field="*{customerTypeId}" class="form-select form-check" name="customerTypeId">
+			       <option value="" selected>請選擇客戶種類</option>
+			      <option th:each="customerType : ${customerTypeIdMap}" th:value="${customerType.key}" th:text="${customerType.value}">
+				  </option>
+			    </select>
+			    <p th:if="${#fields.hasErrors('customerTypeId')}" th:errorclass="error" th:errors="*{customerTypeId}" /> 
+			</div>
+			<div class="form-group">
+				<label for="name">匯率:<span class="text-danger">*</span></label> 
+				<input class="form-control form-check" placeholder="請輸入匯率" th:field="*{rate}" name="rate" onkeyUp="transFeeWithPoint(this);">
+				<p th:if="${#fields.hasErrors('rate')}" th:errorclass="error" th:errors="*{rate}" />
+			</div>
+			<div class="row justify-content-center">
+				<a class="btn btn-success text-white" onclick="$('#ADSettingRateForm').submit()">新增</a>
+			</div>
+		</form>
+	</div>
+</body>
+<script layout:fragment="script">
+//至小數點八位
+function transFeeWithPoint(e){
+    var num = e.value;
+    num = num.replace(/,/g , "");
+    num = num.replace(/[^0-9\.]+/g , "");
+    
+    if (num.includes('.')) {
+    	  var numindex = num.indexOf(".");
+    	  var head = num.substring(0,numindex);
+    	  var bottom = num.substring(numindex,numindex+9);
+    	  num = head+bottom;
+	}
+    
+    if(isNaN(num)){
+         alertMsg("請輸入數字");
+         return;
+    }
+
+    var pattern = /(-?\d+)(\d{9})/;
+    e.value = num;
+}
+</script>
+</html>

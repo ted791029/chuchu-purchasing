@@ -1,0 +1,50 @@
+<html layout:decorator="layout/layout_ad_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="d-flex flex-column container-fluid min-vh-100 bg-light">
+		<form id="ADCurrencyForm" class="form" th:action="@{/chuAdmin/currency/save}" method="post" th:object="${ADCurrencyForm}">
+			<input type="hidden" th:field="*{id}" name="id" th:value="*{id}">
+			<input type="hidden" th:field="*{areaId}" name="areaId" th:value="*{areaId}">
+			<input type="hidden" th:field="*{name}" name="name" th:value="*{name}">
+			<input type="hidden" th:field="*{createTime}" name="createTime" th:value="*{createTime}">
+			<input type="hidden" th:field="*{creator}" name="creator" th:value="*{creator}">
+			<input type="hidden" th:field="*{modifyTime}" name="modifyTime" th:value="*{modifyTime}">
+			<input type="hidden" th:field="*{modifier}" name="modifier" th:value="*{modifier}">
+			<input type="hidden" th:field="*{urlSuffix}" name="urlSuffix" th:value="*{urlSuffix}">
+			<div class="form-group row justify-content-center">
+				<h2 class="text-success">編輯幣別</h2>   
+			</div>
+			<div class="form-group">
+				<label for="areaId">地區:<span class="text-danger">*</span></label>
+				<label th:with="areaId=*{areaId}" th:text="${countryAreaIdMap.get(areaId)}"></label> 
+			    <p th:if="${#fields.hasErrors('areaId')}" th:errorclass="error" th:errors="*{areaId}" /> 
+			</div>
+			<div class="form-group">
+				<label for="name">幣別名稱:<span class="text-danger">*</span></label> 
+				<label th:text="*{name}"></label> 
+				<p th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}" />
+			</div>
+			<div class="form-group">
+				<label for="name">狀態:<span class="text-danger">*</span></label>
+				<div>
+					<div class="form-check form-check-inline">
+					  <input class="form-check-input" type="radio" th:field="*{status}" name="status" id="statusRadio1" value="1">
+					  <label class="form-check-label" for="inlineRadio1">開啟</label>
+					</div>
+					<div class="form-check form-check-inline">
+					  <input class="form-check-input" type="radio" th:field="*{status}" name="status" id="statusRadio2" value="0">
+					  <label class="form-check-label" for="inlineRadio2">關閉</label>
+					</div>
+				</div>
+				<p th:if="${#fields.hasErrors('status')}" th:errorclass="error" th:errors="*{status}" />
+			</div>
+			<div class="row justify-content-center">
+				<a class="btn btn-success text-white" onclick="$('#ADCurrencyForm').submit()">儲存</a>
+			</div>
+		</form>
+	</div>
+</body>
+<script layout:fragment="script">
+</script>
+</html>

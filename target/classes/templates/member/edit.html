@@ -1,0 +1,63 @@
+<html layout:decorator="layout/layout_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="min-vh-100">
+		<div class="row justify-content-center align-items-center min-vh-100">
+			<div class="col-md-8 col-12 bg-white">
+				<form id="MemberForm" class="form" th:action="@{/front/member/save}" method="post" th:object="${memberForm}">
+					<input type="hidden" th:field="*{id}" name="id" th:value="*{id}">
+					<div class="form-group row justify-content-center">
+						<h2 class="text-success">會員中心</h2>   
+					</div>
+					<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+						<h5 class="text-success">基本資料</h5>   
+					</div>
+					<div class="form-group"> 
+						<label>帳號 : </label>
+						<label th:text="*{account}"></label>
+					</div>
+					<div class="form-group">
+						<label>姓名 : <span class="text-danger">*</span></label>
+						<input class="form-control form-check" placeholder="請輸入姓名" th:field="*{name}" name="name" th:value="*{name}">
+						<p th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}" />
+					</div>
+					<div class="form-group">
+						<label>信箱 : </label>
+						<input class="form-control form-check" placeholder="請輸入信箱" th:field="*{email}" name="email" th:value="*{email}">
+						<p th:if="${#fields.hasErrors('email')}" th:errorclass="error" th:errors="*{email}" />
+					</div>
+					<div class="form-group">
+						<label>手機 : <span class="text-danger">*</span></label>
+						<input class="form-control form-check" placeholder="請輸入手機" th:field="*{phone}" name="phone" th:value="*{phone}">
+						<p th:if="${#fields.hasErrors('phone')}" th:errorclass="error" th:errors="*{phone}" />
+					</div>
+					<div class="form-group"> 
+						<label>身分證字號 : <span class="text-danger">*</span></label>
+						<input class="form-control form-check" placeholder="請輸入身分證字號" th:field="*{idntityCard}" name="idntityCard" th:value="*{idntityCard}">
+						<p th:if="${#fields.hasErrors('idntityCard')}" th:errorclass="error" th:errors="*{idntityCard}" />
+					</div>
+					<div class="form-group"> 
+						<label>收件地址 :</label>
+						<input class="form-control form-check" placeholder="請輸入收件地址" th:field="*{address}" name="address" th:value="*{address}">
+						<p th:if="${#fields.hasErrors('address')}" th:errorclass="error" th:errors="*{address}" />
+					</div>
+					<div class="form-group"> 
+						<label>7-11店到店號 :</label>
+						<input class="form-control form-check" placeholder="請輸入7-11店到店號" th:field="*{storeNO}" name="storeNO" th:value="*{storeNO}">
+						<p th:if="${#fields.hasErrors('storeNO')}" th:errorclass="error" th:errors="*{storeNO}" />
+					</div>
+					<div class="row justify-content-center">
+						<a class="btn btn-success text-white" href="#" onclick="$('#MemberForm').submit();return false;">儲存</a>
+					</div>
+				</form>
+	      	</div>
+		</div>
+	</div>
+</body>
+<script layout:fragment="script">
+	$(function(){
+		$('#member_info_a').addClass('active');
+	});
+</script>
+</html>

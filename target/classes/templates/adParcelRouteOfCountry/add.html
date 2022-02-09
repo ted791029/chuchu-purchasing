@@ -1,0 +1,37 @@
+<html layout:decorator="layout/layout_ad_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="d-flex flex-column container-fluid min-vh-100 bg-light">
+		<form id="ADParcelRouteOfCountryForm" class="form" th:action="@{/chuAdmin/parcelRouteOfCountry/save}" method="post" th:object="${ADParcelRouteOfCountryForm}">
+			<input type="hidden" th:field="*{urlSuffix}" name="urlSuffix" th:value="*{urlSuffix}">
+			<div class="form-group row justify-content-center">
+				<h2 class="text-success">新增各國運送方式</h2>   
+			</div>
+			<div class="form-group">
+				<label for="countryId">國家:<span class="text-danger">*</span></label>
+				<select th:field="*{countryId}" class="form-select form-check" name="countryId">
+			      <option value="" selected>請選擇地區</option>
+			      <option th:each="country : ${countryIdMap}" th:value="${country.key}" th:text="${country.value}">
+				  </option>
+			    </select>
+			    <p th:if="${#fields.hasErrors('countryId')}" th:errorclass="error" th:errors="*{countryId}" /> 
+			</div>
+			<div class="form-group">
+				<label for="routeId">運送方式:<span class="text-danger">*</span></label>
+				<select th:field="*{routeId}" class="form-select form-check" name="routeId">
+			      <option value="" selected>請選擇運送方式</option>
+			      <option th:each="route : ${routeIdMap}" th:value="${route.key}" th:text="${route.value}">
+				  </option>
+			    </select>
+			    <p th:if="${#fields.hasErrors('routeId')}" th:errorclass="error" th:errors="*{routeId}" /> 
+			</div>
+			<div class="row justify-content-center">
+				<a class="btn btn-success text-white" onclick="$('#ADParcelRouteOfCountryForm').submit()">新增</a>
+			</div>
+		</form>
+	</div>
+</body>
+<script layout:fragment="script">
+</script>
+</html>

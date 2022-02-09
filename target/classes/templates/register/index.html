@@ -1,0 +1,42 @@
+<html layout:decorator="layout/layout_outside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="min-vh-100">
+		<div class="row justify-content-center align-items-center min-vh-100">
+			<div class="col-md-8 col-sm-12">      
+				<form th:action="@{/front/register/doRegister}" class="bg-white form" th:object="${registerForm}" method="post">
+					<div class="form-group">
+						<label for="email">Email 帳號</label> 
+						<input class="form-control" placeholder="請輸入信箱" th:field="*{account}">
+						<p th:if="${#fields.hasErrors('account')}" th:errorclass="error" th:errors="*{account}" />
+					</div>
+					<div class="form-group">
+						<label for="pwd">密碼</label>
+						<input type="password" class="form-control" placeholder="請輸入密碼，請至少6位數" th:field="*{password}">
+						<p th:if="${#fields.hasErrors('password')}" th:errorclass="error" th:errors="*{password}" />
+					</div>
+					<div class="form-group">
+						<label for="pwd">確認密碼</label> 
+						<input type="password" class="form-control" placeholder="再次輸入密碼" th:field="*{checkPassword}">
+						<p th:if="${#fields.hasErrors('checkPassword')}" th:errorclass="error" th:errors="*{checkPassword}" />
+					</div>
+					<div class="row justify-content-center">
+							<button type="submit" class="btn btn-success">註冊</button>
+					</div>
+					<div class="row justify-content-center">
+						<div class="col-auto">
+							<a class="text-reset" th:href="@{/front/login/index}">已有帳號</a>
+						</div>
+					</div>
+				</form>
+	      	</div>
+		</div>
+	</div>
+</body>
+<script layout:fragment="script">
+	$(function(){
+		$('#login_a').addClass('active');
+	});
+</script>
+</html>

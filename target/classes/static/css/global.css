@@ -1,0 +1,179 @@
+.logo_img{
+	width:220px;
+}
+.footer{
+	padding:20px 0px;
+}
+.content_frame{
+	padding:30px;
+}
+.nav-item{
+	margin:0 10px;
+}
+.fa_text{
+	margin:0 10px;
+}
+body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+	font-family: Microsoft YaHei, Tahoma, Helvetica, Arial, "\5b8b\4f53",
+		sans-serif;
+}
+.font_size_mid{
+	font-size:22px;
+}
+.footer-icon{
+	margin:10px 5px;
+	font-size:16px;
+}
+.form{
+	padding:30px;
+	border-radius:20px;
+}
+.form > div{
+	margin:40px
+}
+.form > .row >a{
+	margin: 10px 15px;
+}
+.btn{
+	width:40%;
+}
+.td_btn{
+	width:100%;
+}
+.error{
+	color: red;
+}
+.product-title{
+	margin: 40px 40px 0px 40px;
+}
+.products-form{
+	margin: 0px 40px 40px 40px;
+}
+.product-detail{
+	border-bottom: dotted;
+}
+.product-detail > div{
+	margin: 20px;
+}
+.line-break{
+	word-break: break-all;
+}
+.hint{
+	font-size : 14px;
+	color : blue;
+}
+.product_name{
+	display : inline-block;
+ 	overflow : hidden;
+  	text-overflow : ellipsis;
+  	white-space : nowrap;
+  	width : 138px;
+}
+.form-control datepicker{
+	with : 49%;
+}
+.datepicker_div{
+	display: flex;
+}
+.btn-toggle::before {
+  width: 1.25em;
+  line-height: 0;
+  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba(255,255,255,1)' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+  transition: transform .35s ease;
+  transform-origin: .5em 50%;
+}
+.btn-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: .25rem .5rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, .65);
+  background-color: transparent;
+  border: 0;
+}
+.btn-toggle-nav a {
+  display: inline-flex;
+  padding: .1875rem .5rem;
+  margin-top: .125rem;
+  margin-left: 1.25rem;
+  text-decoration: none;
+}
+
+.btn-toggle[aria-expanded="true"] {
+  color: rgba(0, 0, 0, .85);
+}
+.btn-toggle[aria-expanded="true"]::before {
+  transform: rotate(90deg);
+}
+
+
+@media screen and (max-width: 576px){
+    .login_form{
+		padding:5px;
+	}
+	.form > div{
+	margin:10px
+	}
+	.form > .row >a{
+		margin: 2px 3px;
+	}
+	.product-title{
+		margin: 10px 10px 0px 10px;
+	}
+	.products-form{
+	margin: 0px 10px 10px 10px;
+	}
+	.product-detail > div{
+		margin: 10px;
+	}
+	.product_name{
+	display : inline-block;
+ 	overflow : hidden;
+  	text-overflow : ellipsis;
+  	white-space : nowrap;
+  	width : 220px;
+	}
+	.td_btn{
+		width:50%;
+	}
+	.form{
+		padding:unset;
+		border-radius:20px;
+	}
+}
+
+/*額外做顏色，沒有什麼意義*/
+tr.tr-only-hide {color: #6c757d;}
+
+@media (max-width: 1400px) {
+  .table-rwd{min-width: 100%;}
+  /*針對tr去做隱藏*/
+  tr.tr-only-hide {display: none !important;}
+  /*讓tr變成區塊主要讓他有個區塊*/
+  .table-rwd tr{
+    display: block;
+    border: 1px solid #ddd;
+    margin-top: 5px;
+  }
+  .table-rwd td {
+    text-align: left;
+    font-size: 15px;
+    overflow: hidden;
+    width: 100%;
+    display: block;
+	}
+	.table-rwd td:before {
+    /*最重要的就是這串*/
+    content: attr(data-th) " : ";
+    /*最重要的就是這串*/
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: bold;
+	  margin-right: 10px;
+    color: #6c757d;
+  }
+  /*當RWD縮小的時候.table-bordered 會有兩條線，所以針對.table-bordered去做修正*/
+  .table-rwd.table-bordered td,.table-rwd.table-bordered th,.table-rwd.table-bordered{border:0;}
+  
+}
+	

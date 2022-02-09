@@ -1,0 +1,56 @@
+<html layout:decorator="layout/layout_ad_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="d-flex flex-column container-fluid min-vh-100 bg-light">
+		<form id="ADCurrencyRateForm" class="form" th:action="@{/chuAdmin/currencyRate/save}" method="post" th:object="${ADCurrencyRateForm}">
+			<input type="hidden" th:field="*{id}" name="id" th:value="*{id}">
+			<input type="hidden" th:field="*{currencyId}" name="currencyId" th:value="*{currencyId}">
+			<input type="hidden" th:field="*{createTime}" name="createTime" th:value="*{createTime}">
+			<input type="hidden" th:field="*{creator}" name="creator" th:value="*{creator}">
+			<input type="hidden" th:field="*{modifyTime}" name="modifyTime" th:value="*{modifyTime}">
+			<input type="hidden" th:field="*{modifier}" name="modifier" th:value="*{modifier}">
+			<input type="hidden" th:field="*{urlSuffix}" name="urlSuffix" th:value="*{urlSuffix}">
+			<div class="form-group row justify-content-center">
+				<h2 class="text-success">編輯匯率</h2>   
+			</div>
+			<div class="form-group">
+				<label for="currencyId">幣別:<span class="text-danger">*</span></label>
+				<label th:with="currencyId=*{currencyId}" th:text="${currencyIdMap.get(currencyId)}"></label> 
+			    <p th:if="${#fields.hasErrors('currencyId')}" th:errorclass="error" th:errors="*{currencyId}" /> 
+			</div>
+			<div class="form-group">
+				<label for="rate">幣別匯率:<span class="text-danger">*</span></label> 
+				<input class="form-control form-check" placeholder="請輸入匯率" th:field="*{rate}" name="rate" onkeyUp="transFeeWithPoint(this);"> 
+				<p th:if="${#fields.hasErrors('rate')}" th:errorclass="error" th:errors="*{rate}" />
+			</div>
+			<div class="row justify-content-center">
+				<a class="btn btn-success text-white" onclick="$('#ADCurrencyRateForm').submit()">儲存</a>
+			</div>
+		</form>
+	</div>
+</body>
+<script layout:fragment="script">
+//至小數點八位
+function transFeeWithPoint(e){
+    var num = e.value;
+    num = num.replace(/,/g , "");
+    num = num.replace(/[^0-9\.]+/g , "");
+    
+    if (num.includes('.')) {
+    	  var numindex = num.indexOf(".");
+    	  var head = num.substring(0,numindex);
+    	  var bottom = num.substring(numindex,numindex+9);
+    	  num = head+bottom;
+	}
+    
+    if(isNaN(num)){
+         alertMsg("請輸入數字");
+         return;
+    }
+
+    var pattern = /(-?\d+)(\d{9})/;
+    e.value = num;
+}
+</script>
+</html>

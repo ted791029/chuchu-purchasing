@@ -1,0 +1,46 @@
+<html layout:decorator="layout/layout_ad_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="d-flex flex-column container-fluid min-vh-100 bg-light">
+		<form id="ADCurrencyRateForm" class="form" th:action="@{/chuAdmin/currency/find}" method="post" th:object="${ADCurrencyRateForm}">
+			<div class="form-group row justify-content-center">
+				<h2 class="text-success">台銀匯率查詢</h2>   
+			</div>
+		</form>
+		<form class="form" method="post" th:if="${page ne null}" th:object="${page}">
+			<div class="form-group row justify-content-center">
+				<h5 class="text-success">搜尋結果</h5>   
+			</div>
+			<div class="form-group d-flex justify-content-end">
+				<a th:href="@{/chuAdmin/currencyRate/add}" class="text-reset mx-3"><i class="fa fa-plus" aria-hidden="true" style="font-size: x-large;"></i></a>
+			</div>
+			<div class="form-group">
+				<table class="table table-hover table-rwd text-center">
+				  <thead>
+				    <tr class="tr-only-hide">
+				      <th scope="col">序號</th>
+				      <th scope="col">幣別名稱</th>
+				      <th scope="col">匯率</th>
+				      <th scope="col">功能</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="currencyRate, iter: *{content}">
+				      <td data-th="序號" th:text="${(page.number * page.size) + iter.count}"></td>
+				      <td data-th="幣別名稱" th:text="${currencyIdMap.get(currencyRate.currencyId)}"></td>
+				      <td data-th="匯率" th:text="${currencyRate.rate}"></td>
+				      <td data-th="功能"><a class="btn td_btn btn-success text-white" th:href="@{/chuAdmin/currencyRate/edit(id = ${currencyRate.id})}" >編輯</a></td>
+				    </tr>
+				  </tbody>
+				</table>
+			</div>
+		</form>
+		<div th:insert="components/paging :: paging">
+		</div>
+	</div>
+</body>
+<script layout:fragment="script">
+
+</script>
+</html>

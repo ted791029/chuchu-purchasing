@@ -1,0 +1,79 @@
+<html layout:decorator="layout/layout_ad_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="d-flex flex-column container-fluid min-vh-100 bg-light">
+		<form id="ADParcelRouteOfCountryForm" class="form" th:action="@{/chuAdmin/parcelRouteOfCountry/find}" method="post" th:object="${ADParcelRouteOfCountryForm}">
+			<div class="form-group row justify-content-center">
+				<h2 class="text-success">各國運送方式查詢</h2>   
+			</div>
+			<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+				<h5 class="text-success">搜尋條件</h5>   
+			</div>
+			<div class="form-group">
+				<label for="countryId">國家</label>
+				<select th:field="*{countryId}" class="form-select form-check" name="countryId">
+			      <option value="" selected>請選擇國家</option>
+			      <option th:each="country : ${countryIdMap}" th:value="${country.key}" th:text="${country.value}">
+				  </option>
+			    </select> 
+			</div>
+			<div class="form-group">
+				<label for="routeId">運送方式</label>
+				<select th:field="*{routeId}" class="form-select form-check" name="routeId">
+			      <option value="" selected>請選擇運送方式</option>
+			      <option th:each="route : ${routeIdMap}" th:value="${route.key}" th:text="${route.value}">
+				  </option>
+			    </select> 
+			</div>
+			<div class="row justify-content-center">
+				<a class="btn btn-success text-white" onclick="$('#ADParcelRouteOfCountryForm').submit()">查詢</a>
+			</div>
+		</form>
+		<form id="resultForm" class="form" th:action="@{/chuAdmin/parcelRouteOfCountry/delete}" method="post" th:if="${page ne null}" th:object="${page}">
+			<div class="form-group row justify-content-center">
+				<h5 class="text-success">搜尋結果</h5>   
+			</div>
+			<div class="form-group d-flex justify-content-end">
+				<a href="#" class="text-reset mx-3" onclick="deleteChecked($('#resultForm')); return false;"><i class="fa fa-trash-o" aria-hidden="true" style="font-size: x-large;"></i></a>
+				<a th:href="@{/chuAdmin/parcelRouteOfCountry/add}" class="text-reset mx-3"><i class="fa fa-plus" aria-hidden="true" style="font-size: x-large;"></i></a>
+			</div>
+			<div class="form-group">
+				<table class="table table-hover table-rwd text-center">
+				  <thead>
+				    <tr class="tr-only-hide">
+				      <th scope="col">
+				      	<div class="form-check">
+						  <input class="form-check-input" type="checkbox" onclick="checkAll(this)" id="all">
+						</div>
+				      </th>
+				      <th scope="col">序號</th>
+				      <th scope="col">國家</th>
+				      <th scope="col">運送方式</th>
+				      <th scope="col">功能</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="parcelRouteOfCountry, iter: *{content}">
+				      <td data-th="checkBox">
+				      	<div class="form-check">
+						  <input class="form-check-input checkbox" type="checkbox" th:value="${parcelRouteOfCountry.id}" th:attr="id='check_' + ${iter.count}" name="ids">
+						</div>
+				      </td>
+				      <td data-th="序號" th:text="${(page.number * page.size) + iter.count}"></td>
+				      <td data-th="國家" th:text="${countryIdMap.get(parcelRouteOfCountry.countryId)}"></td>
+				      <td data-th="運送方式" th:text="${routeIdMap.get(parcelRouteOfCountry.routeId)}"></td>
+				      <td data-th="功能"><a class="btn td_btn btn-success text-white" th:href="@{/chuAdmin/parcelRouteNote/find(countryParcelRouteId=${parcelRouteOfCountry.id}, countryId=${parcelRouteOfCountry.countryId}, routeId=${parcelRouteOfCountry.routeId})}" >註解內容列表</a></td>
+				    </tr>
+				  </tbody>
+				</table>
+			</div>
+		</form>
+		<div th:insert="components/paging :: paging">
+		</div>
+	</div>
+</body>
+<script layout:fragment="script">
+
+</script>
+</html>

@@ -1,0 +1,6 @@
+com\front\chuchuPurchasingAgent\Repositories\CustomerRepository.class
+com\front\chuchuPurchasingAgent\Models\Customer.class
+com\front\chuchuPurchasingAgent\ChuchuPurchasingAgentApplication.class
+com\front\chuchuPurchasingAgent\controllers\CustomerController\CutomerController.class
+com\front\chuchuPurchasingAgent\controllers\IndexController\IndexController.class
+com\front\chuchuPurchasingAgent\SpringBootHelloWorld.class

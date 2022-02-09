@@ -1,0 +1,79 @@
+<html layout:decorator="layout/layout_ad_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="d-flex flex-column container-fluid min-vh-100 bg-light">
+		<form id="ADSettingRateForm" class="form" th:action="@{/chuAdmin/settingRate/find}" method="post" th:object="${ADSettingRateForm}">
+			<div class="form-group row justify-content-center">
+				<h2 class="text-success">自訂匯率查詢</h2>   
+			</div>
+			<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+				<h5 class="text-success">搜尋條件</h5>   
+			</div>
+			<div class="form-group">
+				<label for="whereId">來源種類</label>
+				<select th:field="*{whereId}" class="form-select form-check" name="whereId">
+			      <option value="" selected>請選擇來源種類</option>
+			      <option th:each="where : ${fromWhereIdMap}" th:value="${where.key}" th:text="${where.value}">
+				  </option>
+			    </select> 
+			</div>
+			<div class="form-group">
+				<label for="countryId">國家</label>
+				<select th:field="*{countryId}" class="form-select form-check" name="countryId">
+			      <option value="" selected>請選擇國家</option>
+			      <option th:each="country : ${countryIdMap}" th:value="${country.key}" th:text="${country.value}">
+				  </option>
+			    </select> 
+			</div>
+			<div class="form-group">
+				<label for="customerTypeId">客戶種類</label>
+				<select th:field="*{customerTypeId}" class="form-select form-check" name="customerTypeId">
+			      <option value="" selected>請選擇客戶種類</option>
+			      <option th:each="customerType : ${customerTypeIdMap}" th:value="${customerType.key}" th:text="${customerType.value}">
+				  </option>
+			    </select> 
+			</div>
+			<div class="row justify-content-center">
+				<a class="btn btn-success text-white" onclick="$('#ADSettingRateForm').submit()">查詢</a>
+			</div>
+		</form>
+		<form class="form" method="post" th:if="${page ne null}" th:object="${page}">
+			<div class="form-group row justify-content-center">
+				<h5 class="text-success">搜尋結果</h5>   
+			</div>
+			<div class="form-group d-flex justify-content-end">
+				<a th:href="@{/chuAdmin/settingRate/add}" class="text-reset mx-3"><i class="fa fa-plus" aria-hidden="true" style="font-size: x-large;"></i></a>
+			</div>
+			<div class="form-group">
+				<table class="table table-hover table-rwd text-center">
+				  <thead>
+				    <tr class="tr-only-hide">
+				      <th scope="col">序號</th>
+				      <th scope="col">來源種類</th>
+				      <th scope="col">國家名稱</th>
+				      <th scope="col">客戶種類</th>
+				      <th scope="col">匯率</th>
+				      <th scope="col">功能</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="settingRate, iter: *{content}">
+				      <td data-th="序號" th:text="${(page.number * page.size) + iter.count}"></td>
+				      <td data-th="來源種類" th:text="${fromWhereIdMap.get(settingRate.whereId)}"></td>
+				      <td data-th="國家名稱" th:text="${countryIdMap.get(settingRate.countryId)}"></td>
+				      <td data-th="客戶種類" th:text="${customerTypeIdMap.get(settingRate.customerTypeId)}"></td>
+				      <td data-th="匯率" th:text="${settingRate.rate}"></td>
+				      <td data-th="功能"><a class="btn td_btn btn-success text-white" th:href="@{/chuAdmin/settingRate/edit(id = ${settingRate.id})}" >編輯</a></td>
+				    </tr>
+				  </tbody>
+				</table>
+			</div>
+		</form>
+		<div th:insert="components/paging :: paging">
+		</div>
+	</div>
+</body>
+<script layout:fragment="script">
+</script>
+</html>

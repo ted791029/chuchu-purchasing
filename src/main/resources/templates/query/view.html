@@ -1,0 +1,137 @@
+<html layout:decorator="layout/layout_outside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="min-vh-100">
+		<div class="row justify-content-center align-items-center min-vh-100">
+			<div class="col-md-8 col-12">
+				<form id="queryViewForm" th:action="@{/front/order/save}" class="bg-white form" method="post" th:object="${queryViewForm}">
+					<div class="form-group row justify-content-center">
+						<h2 class="text-success">詢問單明細</h2>   
+					</div>
+					<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+						<h5 class="text-success">基本資料</h5>   
+					</div>  
+					<div class="form-group">
+						<input name="email" th:field="*{email}" type="hidden" th:value="*{email}"/> 
+						<label>電子信箱 : </label>
+						<label th:text="*{email}"></label>
+					</div>
+					<div class="form-group">
+						<input name="countryId" th:field="*{countryId}" type="hidden" th:value="*{countryId}"/> 
+						<label>國家 : </label> 
+						<label th:with="countryId=*{countryId}" th:text="${countryIdMap.get(countryId)}"></label>
+					</div>
+					<div class="form-group">
+						<input name="currencyId" th:field="*{currencyId}" type="hidden" th:value="*{currencyId}"/>
+						<label>幣別 : </label> 
+						<label th:with="currencyId=*{currencyId}" th:text="${currencyIdMap.get(currencyId)}"></label>
+					</div>
+					<div class="form-group">
+						<input name="discountCode" th:field="*{discountCode}" type="hidden" th:value="*{discountCode}"/>
+						<label>優惠碼 : </label> 
+						<label th:text="*{discountCode}"></label>
+					</div>
+					<div class="form-group">
+						<input name="bankId" th:field="*{bankId}" type="hidden" th:value="*{bankId}"/>
+						<label>欲匯款銀行 : </label> 
+						<label th:with="bankId=*{bankId}" th:text="${bankIdMap.get(bankId)}"></label>
+					</div>
+					<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+						<h5 class="text-success">運送方案</h5>   
+					</div>
+					<div class="form-group">
+						<input name="storehouseCountryId" th:field="*{storehouseCountryId}" type="hidden" th:value="*{storehouseCountryId}"/>
+						<label>集貨倉 : </label> 
+						<label th:with="storehouseCountryId=*{storehouseCountryId}" th:text="${countryIdMap.get(storehouseCountryId)}"></label>
+					</div>
+					<div class="form-group">
+						<input name="parcelRouteId" th:field="*{parcelRouteId}" type="hidden" th:value="*{parcelRouteId}"/>
+						<label>運送方式 : </label> 
+						<label th:with="parcelRouteId=*{parcelRouteId}" th:text="${parcelRouteIdMap.get(parcelRouteId)}"></label>
+					</div>
+					<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+						<h5 class="text-success">商品計費</h5>   
+					</div>
+					<div class="form-group" th:with="products = *{products}">
+						<table class="table table-hover table-rwd">
+						  <thead>
+						    <tr class="tr-only-hide">
+						      <th scope="col">序號</th>
+						      <th scope="col">商品名稱</th>
+						      <th scope="col">規格</th>
+						      <th scope="col">價格</th>
+						      <th scope="col">數量</th>
+						      <th scope="col">匯率</th>
+						      <th scope="col">小計</th>
+						      <th scope="col">備註</th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						    <tr th:each="product, iter: *{products}">
+						      <td data-th="序號"  scope="row" th:text="${iter.count}"></td>
+						      <td data-th="商品名稱">
+						      	<input th:attr="name='products[' + ${iter.index} + '].url'" type="hidden" th:value="${product.url}"/>
+						      	<input th:attr="name='products[' + ${iter.index} + '].name'" type="hidden" th:value="${product.name}"/>
+						      	<a class="product_name" th:text="${product.name}" th:attr="href=${product.url}" target="_blank">
+						      		<span th:text="${product.name}"></span>
+						      	</a>
+						      </td>
+						      <td data-th="規格"><input th:attr="name='products[' + ${iter.index} + '].format'" type="hidden" th:value="${product.format}"/><a href="#" onclick="return false;" data-bs-toggle="tooltip" data-bs-placement="bottom" th:attr="title=${product.format}">詳細規格</a></td>
+						      <td data-th="價格"><input th:attr="name='products[' + ${iter.index} + '].price'" type="hidden" th:value="${product.price}"/><span th:text="${product.price}"></span></td>
+						      <td data-th="數量"><input th:attr="name='products[' + ${iter.index} + '].count'" type="hidden" th:value="${product.count}"/><span th:text="${product.count}"></span></td>
+						      <td data-th="匯率"><input th:attr="name='products[' + ${iter.index} + '].rate'" type="hidden" th:value="${product.rate}"/><span th:text="${product.rate}"></span></td>
+						      <td data-th="小計"><input th:attr="name='products[' + ${iter.index} + '].total'" type="hidden" th:value="${product.total}"/><span th:text="${product.total}"></span> 元</td>
+						      <td data-th="備註"><input th:attr="name='products[' + ${iter.index} + '].note'" type="hidden" th:value="${product.note}"/><a href="#" onclick="return false;" data-bs-toggle="tooltip" data-bs-placement="bottom" th:if="${product.note ne null && product.note ne '' }" th:attr="title=${product.note}">詳細備註</a></td>
+						    </tr>
+						  </tbody>
+						</table>
+						<div class="text-end fs-5">合計 : <span th:text="*{allTotalPrice}"></span>元</div>
+					</div>
+					<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+						<h5 class="text-success">第一階段費用</h5>   
+					</div>
+					<div class="form-group">
+						<input name="allTotalPrice" th:field="*{allTotalPrice}" type="hidden" th:value="*{allTotalPrice}"/>
+						<label for="allTotalPrice">商品合計 : </label>
+						<label><span th:text="*{allTotalPrice}"></span>元</label> 
+					</div> 
+					<div class="form-group">
+						<input name="purchasingPrice" th:field="*{purchasingPrice}" type="hidden" th:value="*{purchasingPrice}"/>
+						<label for="purchasingPrice">代買費 : </label>
+						<label><span th:text="*{purchasingPrice}"></span>元</label> 
+					</div> 
+					<div class="form-group">
+						<input name="localFeePrice" th:field="*{localFeePrice}" type="hidden" th:value="*{localFeePrice}"/>
+						<label for="id">當地手續費 : </label>
+						<label><span th:text="*{localFeePrice}"></span>元</label>  
+					</div>
+					<div class="form-group">
+						<input name="firstStagePrice" th:field="*{firstStagePrice}" type="hidden" th:value="*{firstStagePrice}"/>
+						<h5 class="text-danger">第一階段應付費用 : <span th:text="*{firstStagePrice}"></span>元</h5>
+					</div>
+					<div class="row justify-content-center">
+							<button onclick="orderConfirm(); return false;" class="btn btn-danger">下訂單</button>
+					</div> 
+				</form>
+	      	</div>
+		</div>
+
+	</div>
+</body>
+<script layout:fragment="script">
+	$(function(){
+		$('#qurey_a').addClass('active');
+	});
+	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+	var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+	  return new bootstrap.Tooltip(tooltipTriggerEl)
+	})
+	function orderConfirm(){
+		var yes = confirm('確定要下單嗎？');
+		if (yes) {
+			queryViewForm.submit();
+		}
+	}
+</script>
+</html>

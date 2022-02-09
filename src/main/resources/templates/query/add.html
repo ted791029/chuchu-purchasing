@@ -1,0 +1,461 @@
+<html layout:decorator="layout/layout_outside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="min-vh-100">
+		<div class="row justify-content-center align-items-center min-vh-100">
+			<div class="col-md-8 col-12">
+				<form id="queryForm" th:action="@{/front/query/save}" class="bg-white form" method="post" th:object="${queryForm}">
+					<div class="form-group row justify-content-center">
+						<h2 class="text-success">新增詢問單</h2>   
+					</div>
+					<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+						<h5 class="text-success">基本資料</h5>   
+					</div>
+					<div class="form-group">
+						<label for="email">電子信箱<span class="text-danger">*</span></label> 
+						<input class="form-control form-check" placeholder="請輸入信箱" th:field="*{email}" name="email">
+						<p class="error" style="display:none">請輸入</p>
+					</div>
+					<div class="form-group">
+						<label for="country">地區<span class="text-danger">*</span></label>
+					    <select th:field="*{countryAreaId}" class="form-select form-check" name="countryArea" onchange="changeOption(this);">
+						    <option value="" selected>請選擇</option>
+						    <option th:each="countryArea : ${countryAreas}" th:value="${countryArea.id}" th:text="${countryArea.name}">
+						    </option>
+						</select>
+					    <p class="error" style="display:none">請選擇</p>
+					</div>
+					<div class="form-group">
+						<label for="country">國家<span class="text-danger">*</span></label>
+					    <select id="countrySelect" th:field="*{countryId}" class="form-select form-check" name="country">
+					      <option value="" selected>請選擇地區</option>
+					    </select>
+					    <p class="error" style="display:none">請選擇</p>
+					</div>
+					<div class="form-group">
+						<label for="currency">幣別<span class="text-danger">*</span></label>
+					    <select id="currencySelect" class="form-select form-check" th:field="*{currencyId}" name="currencyId">
+					      <option value="" selected>請選擇地區</option>
+					    </select>
+					    <p class="error" style="display:none">請選擇</p>
+					</div>
+					<div class="form-group">
+						<label for="discountCode">優惠碼</label> 
+						<input class="form-control" placeholder="請入優惠碼" th:field="*{discountCode}" name="discountCode" onchange="checkCode(this);showParcelRouteNote()">
+						<p class="error" style="display:none">請輸入</p>
+					</div>
+					<div class="form-group">
+						<label for="bankId">欲匯款銀行<span class="text-danger">*</span></label>
+					    <select  th:field="*{bankId}" class="form-select form-check" name="bankId">
+					      <option value="" selected>請選擇</option>
+					      <option th:each="bank : ${banks}" th:value="${bank.id}" th:text="${bank.name}">
+						  </option>
+					    </select>
+					    <p class="error" style="display:none">請選擇</p>
+					</div>
+					<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+						<h5 class="text-success">運送方案</h5>   
+					</div>
+					<div class="form-group">
+						<label for="storehouseCountryId">集貨倉<span class="text-danger">*</span></label>
+					    <select id="storehouseCountrySelect" th:field="*{storehouseCountryId}" class="form-select form-check" name="storehouseCountryId" onchange="changeRouteOption(this);">
+					      <option value="" selected>請選擇地區</option>
+					    </select>
+					    <p class="error" style="display:none">請選擇</p>
+					</div>
+					<div class="form-group">
+						<label for="parcelRouteId">運送方式<span class="text-danger">*</span></label>
+					    <select id="parcelRouteSelect" th:field="*{parcelRouteId}" class="form-select form-check" name="parcelRouteId" onchange="showParcelRouteNote()">
+					      <option value="" selected>請選擇集貨倉</option>
+					    </select>
+					    <div id="routeNote"></div>
+					    <p class="error" style="display:none">請選擇</p>
+					</div>
+					<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+						<h5 class="text-success">商品列表</h5>   
+					</div>
+					<div id="products-form" class="products-form">
+						
+					</div>	
+					<div class="form-group d-flex justify-content-end">
+						<i class="fa fa-plus" aria-hidden="true" style="font-size: x-large;" onclick="addProduct();"></i>
+					</div>
+					<div class="form-group row justify-content-center">
+						<a class="btn btn-success text-white" onclick="validate()">查詢價格</a>
+					</div>
+				</form>
+	      	</div>
+		</div>
+
+	</div>
+</body>
+<script layout:fragment="script">
+	var count = 0;
+	var webCountriesMap;
+	var storehouseCountriesMap;
+	var currenciesMap;
+	var routesMap;
+	$(function(){
+		$('#qurey_a').addClass('active');
+		ajaxGetWebCountriesMap();
+		ajaxGetStorehouseCountriesMap();
+		ajaxGetCurrenciesMap();
+		ajaxGetRoutesMap();
+	});
+	//增加商品
+	function addProduct(){
+		let html = getProductDetailHtml();
+		$('#products-form').append(html);
+		count++;
+	}
+	//取得商品Html
+	function getProductDetailHtml(){
+		let html = '';
+		html += '<div class="product-detail">';
+		html += '	<div class="form-group d-flex justify-content-end">';
+		html += '		<i class="fa fa-trash-o" aria-hidden="true" style="font-size: x-large;" onclick="deleteProduct(this)"></i>';
+		html += '	</div>';
+		html += '	<div class="form-group">';
+		html += '		<label>商品名稱<span class="text-danger">*</span></label>';
+		html += '		<input class="form-control form-check" placeholder="請輸入商品名稱" name="products[' + count + '].name">';
+		html += '		<sapn class="hint">1.醫療器材（設備）、保健食品、藥品、貓狗保健品、藥品不代買唷!!!<br>2.請直接複製網站原文。</span>';
+		html += '		<p class="error" style="display:none">請輸入</p>';
+		html += '	</div>';
+		html += '	<div class="form-group">';
+		html += '		<label>商品網址<span class="text-danger">*</span></label>';
+		html += '		<input class="form-control form-check" placeholder="請輸入商品網址" name="products[' + count + '].url">';
+		html += '		<sapn class="hint">請用網站原始網址，勿用縮網址唷~謝謝。</span>';
+		html += '		<p class="error" style="display:none">請輸入</p>';
+		html += '	</div>';
+		html += '	<div class="form-group">';
+		html += '		<label>商品規格</label>';
+		html += '		<input class="form-control" placeholder="請輸入商品規格" name="products[' + count + '].format">';
+		html += '		<sapn class="hint">請直接複製網站上的原文以免下錯。</span>';
+		html += '	</div>';
+		html += '	<div class="form-group">';
+		html += '		<label>商品價格<span class="text-danger">*</span></label>';
+		html += '		<input class="form-control form-check" placeholder="請輸入商品價格" name="products[' + count + '].price"}" onkeyUp="transFeeWithPoint(this);">';
+		html += '		<sapn class="hint">若有折扣券或折扣碼請填折扣後金額<br></span>';
+		html += '		<sapn class="hint bg-warning">只能使用針對該商品或全網站之折扣碼，"新會員"或"一個會員僅能使用一次"的無法唷<br>折扣碼情填在備註，謝謝。(若未填寫，而站主自行找到折扣碼，該折扣歸站主唷!!)。</span>';
+		html += '		<p class="error" style="display:none">請輸入</p>';
+		html += '	</div>';
+		html += '	<div class="form-group">';
+		html += '		<label>商品數量<span class="text-danger">*</span></label>';
+		html += '		<input class="form-control form-check" placeholder="請輸入商品數量" name="products[' + count + '].count"}" onkeyUp="transFee(this);">';
+		html += '		<p class="error" style="display:none">請輸入</p>';
+		html += '	</div>';
+		html += '	<div class="form-group">';
+		html += '		<label>備註</label>';
+		html += '		<input class="form-control" placeholder="請輸入備註" name="products[' + count + '].note"}">';
+		html += '		<p class="error" style="display:none">請輸入</p>';
+		html += '	</div>';
+		html += '</div>';
+		return html;
+	}
+	//刪除商品
+	function deleteProduct(button){
+		$(button).closest('.product-detail').remove();
+	}
+	//改變選項
+	function changeOption(areaSelect){
+		let areaId = $(areaSelect).val();
+		removeWebCountriesOption();
+		addWebCountriesOption(areaId);
+		removeCurrenciesOption();
+		addCurrenciesOption(areaId);
+		removeStorehouseCountriesOption();
+		addStorehouseCountriesOption(areaId);
+		changeRouteOption(null);
+		
+	}
+	//改變路線選項
+	function changeRouteOption(storehouseCountrySelect){
+		let countryId = $(storehouseCountrySelect).val();
+		removeRouteNote();
+		removeRoutesOption();
+		addRoutesOption(countryId);
+	}
+	//移除國家選項
+	function removeWebCountriesOption(){
+		$("#countrySelect option").remove();
+	}
+	//移除幣別選項
+	function removeCurrenciesOption(){
+		$("#currencySelect option").remove();
+	}
+	//移除集貨艙選項
+	function removeStorehouseCountriesOption(){
+		$("#storehouseCountrySelect option").remove();
+	}
+	//移除路線選項
+	function removeRoutesOption(){
+		$("#parcelRouteSelect option").remove();
+	}
+	//移除運送備註
+	function removeRouteNote(){
+		$("#routeNote").empty();
+	}
+	//新增網站國家選項
+	function addWebCountriesOption(areaId){
+		let countries = getWebCountries(areaId);
+		let html = getWebCountriesOptionHtml(countries);
+		$('#countrySelect').append(html);
+	}
+	//新增幣別選項
+	function addCurrenciesOption(areaId){
+		let currencies = getCurrencies(areaId);
+		let html = getCurrenciesOptionHtml(currencies);
+		$('#currencySelect').append(html);
+	}
+	//新增集貨艙選項
+	function addStorehouseCountriesOption(areaId){
+		let countries = getStorehouseCountries(areaId);
+		let html = getStorehouseCountriesHtml(countries);
+		$('#storehouseCountrySelect').append(html);
+	}
+	//新增路線選項
+	function addRoutesOption(countryId){
+		let routes = getRoutes(countryId);
+		let html = getRoutesOptionHtml(routes);
+		$('#parcelRouteSelect').append(html);
+	}
+	//取得網站國家列表
+	function getWebCountries(areaId){
+		return webCountriesMap[areaId];
+	}
+	//取得倉庫國家列表
+	function getStorehouseCountries(areaId){
+		return storehouseCountriesMap[areaId];
+	}
+	//取得幣別列表
+	function getCurrencies(areaId){
+		return currenciesMap[areaId];
+	}
+	//取得路線列表
+	function getRoutes(countryId){
+		return routesMap[countryId];
+	}
+	//取得網站國家選項HTML
+	function getWebCountriesOptionHtml(countries){
+		let html = '';
+		if(countries && countries.length > 0){
+			html += '<option value="" selected>請選擇</option>';
+			for(let i = 0; i < countries.length; i ++){
+				let country = countries[i];
+				html += '<option value="' + country.id +'"> ' + country.name + '</option>';
+			}
+		}else{
+			html += '<option value="" selected>請選擇地區</option>';
+		}
+		return html;
+	}
+	//取得幣別選項HTML
+	function getCurrenciesOptionHtml(currencies){
+		let html = '';
+		if(currencies && currencies.length > 0){
+			html += '<option value="" selected>請選擇</option>';
+			for(let i = 0; i < currencies.length; i ++){
+				let currency = currencies[i];
+				html += '<option value="' + currency.id +'"> ' + currency.name + '</option>';
+			}
+		}else{
+			html += '<option value="" selected>請選擇地區</option>';
+		}
+		return html;
+	}
+	//取得集貨艙選項HTML
+	function getStorehouseCountriesHtml(countries){
+		let html = '';
+		if(countries && countries.length > 0){
+			html += '<option value="" selected>請選擇</option>';
+			for(let i = 0; i < countries.length; i ++){
+				let country = countries[i];
+				html += '<option value="' + country.id +'"> ' + country.name + '</option>';
+			}
+		}else{
+			html += '<option value="" selected>請選擇地區</option>';
+		}
+		return html;
+	}
+	//取得路線選項HTML
+	function getRoutesOptionHtml(routes){
+		let html = '';
+		if(routes && routes.length > 0){
+			html += '<option value="" selected>請選擇</option>';
+			for(let i = 0; i < routes.length; i ++){
+				let route = routes[i];
+				html += '<option value="' + route.id +'"> ' + route.name + '</option>';
+			}
+		}else{
+			html += '<option value="" selected>請選擇集貨倉</option>';
+		}
+		return html;
+	}
+	//檢驗
+	function validate(){
+		let isError = false;
+		//是否有增加商品
+		let products = $('.product-detail');
+		if(products.length <= 0){
+			alert("請選擇商品");
+			return;
+		}
+		//隱藏所有錯誤提示
+		let errors = $('.error');
+		errors.each(function(){
+			$(this).hide();
+		});
+		//檢查輸入並跳出提示
+		let targets = $('.form-check');
+		targets.each(function(){
+			if(!($(this).val())){
+				let group = $(this).closest('.form-group');
+				let error = group.find('.error');
+				error.show();
+			}
+		});
+		//移到第一個錯誤
+		errors.each(function(){
+			if($(this).is(":visible")){
+				let timer= 100;
+				$("html,body").animate({ scrollTop: $(this).offset().top - 100}, timer);
+				isError = true;
+				return false;
+			}				
+		});
+		if(isError) return;
+		$("#queryForm").submit();
+	}
+	
+	//只能輸入數字
+	function transFee(e) {
+	    var num = e.value;
+	    num = num.replace(/,/g , "");
+	    num = num.replace(/\D/g , "");
+	    if(isNaN(num)) {
+	         alertMsg("請輸入數字");
+	         return;
+	    }
+
+	    var pattern = /(-?\d+)(\d{3})/;
+	    e.value = num;
+	}
+
+	// 至小數點八位
+	function transFeeWithPoint(e){
+	    var num = e.value;
+	    num = num.replace(/,/g , "");
+	    num = num.replace(/[^0-9\.]+/g , "");
+	    
+	    if (num.includes('.')) {
+	    	  var numindex = num.indexOf(".");
+	    	  var head = num.substring(0,numindex);
+	    	  var bottom = num.substring(numindex,numindex+9);
+	    	  num = head+bottom;
+		}
+	    
+	    if(isNaN(num)){
+	         alertMsg("請輸入數字");
+	         return;
+	    }
+
+	    var pattern = /(-?\d+)(\d{9})/;
+	    e.value = num;
+	}
+	//顯示運送備註
+	function showParcelRouteNote(){
+		removeRouteNote();
+		let discountCode = $('#discountCode').val();
+		let storehouseCountryId = $('#storehouseCountrySelect').val();
+		let parcelRouteId = $('#parcelRouteSelect').val();
+		let html = getRouteNoteHtml(discountCode, storehouseCountryId, parcelRouteId);
+		$('#routeNote').append(html);
+		
+	}
+	//取得運送備註內容
+	function getRouteNoteHtml(discountCode, storehouseCountryId, parcelRouteId){
+		let html = '';
+		if(!storehouseCountryId || !parcelRouteId) return html;
+		let routeNote = ajaxGetRouteNote(discountCode, storehouseCountryId, parcelRouteId);
+		if(routeNote) html = routeNote.content;
+		return html;
+	}
+	
+	function checkCode(discountCode){
+		if(!($(discountCode).val() == "FROM_PTT")){
+			$(discountCode).val('');
+			alert("無此優惠碼");
+		}
+	}
+	
+	//ajax==========================================================================
+	function ajaxGetWebCountriesMap(){
+		$.ajax({
+	        	url: "/front/query/ajaxGetWebCountriesMap",
+	        	type: 'post',
+	        	async: true,
+	        	success: function(data){
+	        	if(data != null){
+	        		webCountriesMap = data;
+	        	}
+	    	}
+		});
+	}
+	
+	function ajaxGetStorehouseCountriesMap(){
+		$.ajax({
+	        	url: "/front/query/ajaxGetStorehouseCountriesMap",
+	        	type: 'post',
+	        	async: true,
+	        	success: function(data){
+	        	if(data != null){
+	        		storehouseCountriesMap = data;
+	        	}
+	    	}
+		});
+	}
+	
+	function ajaxGetCurrenciesMap(){
+		$.ajax({
+	        	url: "/front/query/ajaxGetCurreniesMap",
+	        	type: 'post',
+	        	async: true,
+	        	success: function(data){
+	        	if(data != null){
+	        		currenciesMap = data;
+	        	}
+	    	}
+		});
+	}
+	
+	function ajaxGetRoutesMap(){
+		$.ajax({
+	        	url: "/front/query/ajaxGetRoutesMap",
+	        	type: 'post',
+	        	async: true,
+	        	success: function(data){
+	        	if(data != null){
+	        		routesMap = data;
+	        	}
+	    	}
+		});
+	}
+	//取得運送備註
+	function ajaxGetRouteNote(discountCode, storehouseCountryId, parcelRouteId){
+		let routeNote;
+		$.ajax({
+	        	url: "/front/query/ajaxGetRouteNote",
+	        	type: 'post',
+	        	data:{discountCode, storehouseCountryId, parcelRouteId},
+	        	async: false,
+	        	success: function(data){
+	        	if(data != null){
+	        		routeNote = data;
+	        	}
+	    	}
+		});
+		return routeNote;
+	}
+</script>
+</html>

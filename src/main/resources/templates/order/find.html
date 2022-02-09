@@ -1,0 +1,86 @@
+<html layout:decorator="layout/layout_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="min-vh-100">
+		<div class="row justify-content-center align-items-center min-vh-100">
+			<div class="col-md-8 col-12 bg-white">
+				<form id="orderFindForm" class="form" th:action="@{/front/order/find}" method="post" th:object="${orderFindForm}">
+					<div class="form-group row justify-content-center">
+						<h2 class="text-success">搜尋訂單</h2>   
+					</div>
+					<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+						<h5 class="text-success">搜尋條件</h5>   
+					</div>
+					<div class="form-group">
+						<div><label for="start">時間區間</label></div>
+						<div class="datepicker_div">
+							<input type="text" placeholder="點擊選擇開始日期" class="form-control datepicker" readonly th:field="*{start}" name="start"/>
+							~
+							<input type="text" placeholder="點擊請選擇結束日期" class="form-control datepicker" readonly th:field="*{end}" name="end"/>
+						</div>
+					</div>
+				</form>
+				<form class="form" method="post" th:if="${page ne null}" th:object="${page}">
+					<div class="form-group row justify-content-center">
+						<h5 class="text-success">搜尋結果</h5>   
+					</div>
+					<div class="form-group">
+						<table class="table table-hover table-rwd text-center">
+						  <thead>
+						    <tr class="tr-only-hide">
+						      <th scope="col">序號</th>
+						      <th scope="col">訂單編號</th>
+						      <th scope="col">建立時間</th>
+						      <th scope="col">功能</th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						    <tr th:each="order, iter: *{content}">
+						      <td data-th="序號" th:text="${(page.number * page.size) + iter.count}"></td>
+						      <td data-th="訂單編號" th:text="${order.id}"></td>
+						      <td data-th="建立時間" th:text="${#dates.format(order.createTime, 'yyyy-MM-dd')}"></td>
+						      <td data-th="功能"><a class="btn td_btn btn-success text-white" th:href="@{'/front/order/view?id=' + ${order.id}}" >查看</a></td>
+						    </tr>
+						  </tbody>
+						</table>
+					</div>
+				</form>
+				<div th:insert="components/paging :: paging">
+				</div>
+	      	</div>
+		</div>
+	</div>
+</body>
+<script layout:fragment="script">
+//檢驗
+function validate(){
+	let isError = false;
+	//隱藏所有錯誤提示
+	let errors = $('.error');
+	errors.each(function(){
+		$(this).hide();
+	});
+	//檢查輸入並跳出提示
+	let targets = $('.form-check');
+	targets.each(function(){
+		if(!($(this).val())){
+			let group = $(this).closest('.form-group');
+			let error = group.find('.error');
+			error.show();
+		}
+	});
+	//移到第一個錯誤
+	errors.each(function(){
+		if($(this).is(":visible")){
+			let timer= 100;
+			$("html,body").animate({ scrollTop: $(this).offset().top - 100}, timer);
+			isError = true;
+			return false;
+		}				
+	});
+	if(isError) return;
+	$("#queryFindForm").submit();
+}
+</script>
+</html>

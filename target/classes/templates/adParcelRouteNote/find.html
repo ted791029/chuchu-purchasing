@@ -1,0 +1,53 @@
+<html layout:decorator="layout/layout_ad_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="d-flex flex-column container-fluid min-vh-100 bg-light">
+		<form id="ADParcelRouteNoteForm" class="form" th:action="@{/chuAdmin/parcelRouteNote/find}" method="post" th:object="${ADParcelRouteNoteForm}">
+			<input type="hidden" th:field="*{countryParcelRouteId}" name="countryParcelRouteId" th:value="*{countryParcelRouteId}">
+			<div class="form-group row justify-content-center">
+				<h2 class="text-success">運送方式備註查詢</h2>   
+			</div>
+			<div class="form-group">
+				<label for="countryId">國家:</label>
+				<label th:with="countryId=*{countryId}" th:text="${countryIdMap.get(countryId)}"></label> 
+			</div>
+			<div class="form-group">
+				<label for="routeId">運送方式:</label>
+				<label th:with="routeId=*{routeId}" th:text="${routeIdMap.get(routeId)}"></label> 
+			</div>
+		</form>
+		<form class="form" method="post" th:if="${page ne null}" th:object="${page}">
+			<div class="form-group row justify-content-center">
+				<h5 class="text-success">搜尋結果</h5>   
+			</div>
+			<div class="form-group d-flex justify-content-end" th:object="${ADParcelRouteNoteForm}">
+				<a th:href="@{/chuAdmin/parcelRouteNote/add(countryParcelRouteId=*{countryParcelRouteId}, countryId=*{countryId}, routeId=*{routeId})}" class="text-reset mx-3"><i class="fa fa-plus" aria-hidden="true" style="font-size: x-large;"></i></a>
+			</div>
+			<div class="form-group">
+				<table class="table table-hover table-rwd text-center">
+				  <thead>
+				    <tr class="tr-only-hide">
+				      <th scope="col">序號</th>
+				      <th scope="col">來源種類</th>
+				      <th scope="col">功能</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="parcelRouteNote, iter: *{content}">
+				      <td data-th="序號" th:text="${(page.number * page.size) + iter.count}"></td>
+				      <td data-th="來源種類" th:text="${fromWhereIdMap.get(parcelRouteNote.fromWhereId)}"></td>
+				      <td data-th="功能"><a class="btn td_btn btn-success text-white" th:href="@{/chuAdmin/parcelRouteNote/edit(id=${parcelRouteNote.id}, countryId=${ADParcelRouteNoteForm.countryId}, routeId=${ADParcelRouteNoteForm.routeId})}" >編輯</a></td>
+				    </tr>
+				  </tbody>
+				</table>
+			</div>
+		</form>
+		<div th:insert="components/paging :: paging">
+		</div>
+	</div>
+</body>
+<script layout:fragment="script">
+
+</script>
+</html>

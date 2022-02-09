@@ -1,0 +1,64 @@
+<html layout:decorator="layout/layout_ad_inside">
+<head></head>
+<meta charset="utf-8">
+<body>
+	<div layout:fragment="content" class="d-flex flex-column container-fluid min-vh-100 bg-light">
+		<form id="ADCountryAreaForm" class="form" th:action="@{/chuAdmin/countryArea/find}" method="post" th:object="${ADCountryAreaForm}">
+			<div class="form-group row justify-content-center">
+				<h2 class="text-success">地區查詢</h2>   
+			</div>
+			<div class="form-group row justify-content-center border-bottom border-4 proudct-title">
+				<h5 class="text-success">搜尋條件</h5>   
+			</div>
+			<div class="form-group">
+				<label for="name">狀態:<span class="text-danger">*</span></label>
+				<div>
+					<div class="form-check form-check-inline">
+					  <input class="form-check-input" type="radio" th:field="*{status}" name="status" id="statusRadio1" value="1">
+					  <label class="form-check-label" for="inlineRadio1">開啟</label>
+					</div>
+					<div class="form-check form-check-inline">
+					  <input class="form-check-input" type="radio" th:field="*{status}" name="status" id="statusRadio2" value="0">
+					  <label class="form-check-label" for="inlineRadio2">關閉</label>
+					</div>
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<a class="btn btn-success text-white" onclick="$('#ADCountryAreaForm').submit()">查詢</a>
+			</div>
+		</form>
+		<form class="form" method="post" th:if="${page ne null}" th:object="${page}">
+			<div class="form-group row justify-content-center">
+				<h5 class="text-success">搜尋結果</h5>   
+			</div>
+			<div class="form-group d-flex justify-content-end">
+				<a th:href="@{/chuAdmin/countryArea/add}" class="text-reset mx-3"><i class="fa fa-plus" aria-hidden="true" style="font-size: x-large;"></i></a>
+			</div>
+			<div class="form-group">
+				<table class="table table-hover table-rwd text-center">
+				  <thead>
+				    <tr class="tr-only-hide">
+				      <th scope="col">序號</th>
+				      <th scope="col">區域</th>
+				      <th scope="col">狀態</th>
+				      <th scope="col">功能</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="area, iter: *{content}">
+				      <td data-th="序號" th:text="${(page.number * page.size) + iter.count}"></td>
+				      <td data-th="區域" th:text="${area.name}"></td>
+				      <td data-th="狀態" th:text="${statusMap.get(area.status)}"></td>
+				      <td data-th="功能"><a class="btn td_btn btn-success text-white" th:href="@{/chuAdmin/countryArea/edit(id = ${area.id})}" >編輯</a></td>
+				    </tr>
+				  </tbody>
+				</table>
+			</div>
+		</form>
+		<div th:insert="components/paging :: paging">
+		</div>
+	</div>
+</body>
+<script layout:fragment="script">
+</script>
+</html>
