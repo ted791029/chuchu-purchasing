@@ -1,14 +1,47 @@
-<html layout:decorator="layout/layout_outside">
+<html layout:decorator="layout/layout_index">
 <head></head>
 <meta charset="utf-8">
 <body>
-	<div layout:fragment="content" class="bg-white container min-vh-100">
-		<h2>hello ted QQ!!</h2>
+	<div layout:fragment="content">
+		<!--================ Hero banner start =================-->
+		<section class="hero-banner">
+		    <div class="container">
+		        <div class="row no-gutters align-items-center pt-60px">
+		            <div class="col-5 d-none d-sm-block">
+		                <div class="hero-banner__img">
+		                    <img th:src="@{/images/hero-banner.png}" class="img-fluid">
+		                </div>
+		            </div>
+		            <div class="col-sm-7 col-lg-6 offset-lg-1 pl-4 pl-md-5 pl-lg-0">
+		                <div class="hero-banner__content">
+		                    <h4>Shop is fun</h4>
+		                    <h1>chuchu的代購世界</h1>
+		                    <p>哈囉~從事代購各國商品已經快2年了，希望能服務更多人，擁有各國代購經驗，歡迎大家來詢價唷~</p>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</section>
+		<!--================ Hero Carousel start =================-->
+		<section class="section-margin mt-0">
+		    <div class="owl-carousel owl-theme hero-carousel row justify-content-md-center">
+		        <div class="hero-carousel__slide col-sm-4 col-12">
+		        	<img th:src="@{/images/hero-slide1.png}" class="img-fluid">
+		        </div>
+		        <div class="hero-carousel__slide col-sm-4 col-12">
+		        	<img th:src="@{/images/hero-slide2.png}" class="img-fluid">
+		        </div>
+		        <div class="hero-carousel__slide col-sm-4 col-12">
+		        	<img th:src="@{/images/hero-slide3.png}" class="img-fluid">
+		        </div>
+		    </div>
+		</section>
+		<!--================ Hero Carousel end =================-->
 	</div>
 	<script layout:fragment="script">
-	$(function(){
-		$('#home_a').addClass('active');
-	});
+		$(function() {
+			$('#home_a').addClass('active');
+		});
 	</script>
 </body>
 </html>
